@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import staticData from "../../service/userData.json";
+import service from "../../service";
 import { Button } from "react-bootstrap";
 
 const ReportList = () => {
-  const [userIds, setUserIds] = useState([]);
+  const [rawData, setRawData] = useState([]);
   const [userData, setUserData] = useState({});
   const [reportData, setReportData] = useState([]);
   const [showReport, setShowReport] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const quarter = [
     [0, 1, 2],
@@ -16,8 +17,7 @@ const ReportList = () => {
   ];
 
   const calculateReport = () => {
-    // console.log("user", userIds);
-    // console.log("userData", userData);
+    console.log("userData", userData);
     if (!showReport) {
       let quarterSum = [];
       userData.forEach((u) => {
@@ -34,7 +34,6 @@ const ReportList = () => {
             }
           });
           if (sumPoints > 0) {
-            //   console.log("sum", sumPoints);
             quarterSum.push({ sumPoints, name, userId, quarter: i });
           }
         }
@@ -66,12 +65,11 @@ const ReportList = () => {
 
   const userDataPreprocessing = () => {
     let userIds = new Set();
-    staticData.data.forEach((t) => {
+    rawData.data.forEach((t) => {
       userIds.add(t.tData.userId);
     });
-    setUserIds([...userIds]);
     let userMap = new Map();
-    staticData.data.forEach((t) => {
+    rawData.data.forEach((t) => {
       let id = t.tData.userId;
       let additionalData = computeValues(t.tData);
 
@@ -83,26 +81,31 @@ const ReportList = () => {
       } else {
         userMap.set(id, [{ ...additionalData, ...t.tData }]);
       }
-
-      //   console.log("abc", userMap);
     });
     setUserData(userMap);
-
-    // console.log("hit", userIds);
   };
 
   useEffect(() => {
-    userDataPreprocessing();
+    service().then((d) => {
+      setRawData(d);
+      setLoading(false);
+    });
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      userDataPreprocessing();
+    }
+  }, [loading]);
 
   return (
     <>
-      <h1>Qaurterly Reward list for 2021</h1>
       <Button style={{ margin: 50 }} onClick={() => calculateReport()}>
-        {showReport ? `Hide Quarterly List` : "Show Quarterly List"}
+        {showReport ? `Hide Reward List` : "Show Reward List"}
       </Button>
       {showReport && (
         <>
+          <h1>Quarterly Reward list for 2021</h1>
           <table className={"table table-striped"}>
             <thead>
               <tr>
