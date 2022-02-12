@@ -1,6 +1,5 @@
 import './App.css';
-import PurchaseList from './Containers/PurchaseList';
-import ReportList from './Containers/ReportList';
+import { PurchaseList, ReportList } from './containers';
 
 function App() {
   return (

@@ -17,9 +17,8 @@ const ReportList = () => {
   ];
 
   const calculateReport = () => {
-    console.log("userData", userData);
     if (!showReport) {
-      let quarterSum = [];
+      let quarterReport = [];
       userData.forEach((u) => {
         for (let i = 0; i < quarter.length; i++) {
           let sumPoints = 0;
@@ -34,11 +33,11 @@ const ReportList = () => {
             }
           });
           if (sumPoints > 0) {
-            quarterSum.push({ sumPoints, name, userId, quarter: i });
+            quarterReport.push({ sumPoints, name, userId, quarter: i });
           }
         }
       });
-      setReportData(quarterSum);
+      setReportData(quarterReport);
       setShowReport(true);
     } else {
       setShowReport(false);
