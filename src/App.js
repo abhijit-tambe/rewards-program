@@ -1,5 +1,5 @@
 import './App.css';
-import { PurchaseList, ReportList } from './containers';
+import { PurchaseList, ReportList } from './Containers';
 
 function App() {
   return (
